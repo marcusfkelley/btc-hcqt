@@ -65,7 +65,11 @@ CIs. Full tables, methodology, and the lessons: [BENCHMARK.md](BENCHMARK.md).
 - Benchmarks — GuitarSet (NYU MARL, CC-BY-4.0); Schubert Winterreise (Zenodo 5139893, CC-BY-3.0).
 
 ## License
-Code + weights: **MIT** (see [LICENSE](LICENSE)). Built on BTC (MIT) — attribution above.
+Code and the released `btc_hcqt_beatlesft.pt` checkpoint are published under the [MIT license](LICENSE). MIT permits use, modification, redistribution, and commercial use of these files when the required copyright and license notice is retained. The upstream [BTC implementation](https://github.com/jayg996/BTC-ISMIR19) is also MIT-licensed.
+
+**Training-data boundary:** This checkpoint starts from BTC and was fine-tuned on Beatles recordings. The upstream BTC authors describe training on Isophonics, Robbie Williams, and UsPop2002 audio obtained from music services; they do not distribute those recordings because of copyright. This repository distributes code and model weights, **not the training recordings**, and does not represent the underlying music as cleared for your use.
+
+The MIT grant for this code and checkpoint is **not** a license to copy, redistribute, or otherwise use the training recordings or any audio you submit. Use audio you have the right to analyze, and check the terms of any third-party libraries or datasets you use. If your project requires a model trained only on fully licensed or cleared recordings, **do not treat this checkpoint as satisfying that requirement** without your own rights review. Chord predictions are estimates, not copyright or sample-clearance decisions.
 
 ## From
 Built by [Selekt](https://selektaudio.com) — cleared-sample tools for producers and composers.
