@@ -5,13 +5,34 @@
 We set out to improve the best open chord-recognition model, **BTC** (Park et al., ISMIR 2019).
 We tried a Harmonic-CQT (HCQT) front-end and a stack of other levers. **Honest result: our best
 variant ties baseline BTC on held-out public benchmarks — it does not clearly beat it.** That's
-a useful finding, and this repo ships everything to reproduce it.
+a useful finding. This repo keeps the methodology, code, and benchmark results public;
+the original research checkpoint is no longer offered as a current download.
 
 > We are **not** claiming a better chord model. As far as we can measure, BTC is the best open
 > one and the field has plateaued (~77–82% root across BTC, CREMA, Chordino, and our variants).
-> The value here is a **reproducible benchmark**, **honest negative results**, and an
+> The value here is a **documented benchmark**, **honest negative results**, and an
 > **extensible HCQT base**. Full numbers → [BENCHMARK.md](BENCHMARK.md). Extend it →
 > [EXTENSION-GUIDE.md](EXTENSION-GUIDE.md).
+
+## Checkpoint availability and commercial-use boundary
+
+The `btc_hcqt_beatlesft.pt` research checkpoint has been withdrawn from the current
+repository. It inherited pretrained BTC weights and was fine-tuned on Beatles recordings.
+The [upstream BTC authors](https://github.com/jayg996/BTC-ISMIR19) describe training on
+Isophonics, Robbie Williams, and UsPop2002 audio obtained from music services; they do not
+distribute that audio because of copyright. We have **not established that this
+BTC-derived checkpoint is cleared for commercial deployment**. Do not treat this repository,
+its MIT-licensed code, or its benchmark as an assurance that the checkpoint is suitable for
+use in a commercial product.
+
+For questions about the checkpoint or research access, [contact Selekt](https://selektaudio.com/contact)
+and mention `BTC-HCQT`. We can explain its provenance and consider requests, but we cannot
+grant rights to the underlying recordings. For a commercial project requiring documented
+training rights, use a model trained on appropriately licensed data and verify the rights
+and provenance of **all** starting weights, not just later fine-tuning data.
+
+Earlier revisions of this repository described the checkpoint as MIT-licensed. This
+update does not retroactively change prior grants or remove copies and Git history.
 
 ## What's here
 
@@ -22,26 +43,25 @@ a useful finding, and this repo ships everything to reproduce it.
 | `hcqt_precompute.py` | Precompute HCQT features for a dataset |
 | `hcqt_finetune.py` | Train / fine-tune the HCQT model (freeze-then-unfreeze schedule) |
 | `hcqt_eval.py` | Run a trained HCQT checkpoint on audio → chord predictions |
-| `btc_hcqt_beatlesft.pt` | **The parity model** — Beatles-fine-tuned BTC+HCQT (ties baseline BTC) |
+| `btc_hcqt_beatlesft.pt` | Research checkpoint used for the reported parity result; withdrawn from current downloads (see above) |
 | `bench_score.py` | mir_eval scorer (root / thirds / triads / sevenths / majmin / mirex + bootstrap CIs) |
 | `bench_guitarset.py`, `bench_schubert.py`, `bench_isophonics.py` | Dataset loaders → refs + manifests |
 | `run_eval.py` | Baseline lanes — BTC / CREMA / Chordino |
 | `bench_ensemble.py`, `chordino_to_harte.py` | Ensemble experiment + a Chordino→Harte label fixer |
 | `EXTENSION-GUIDE.md` | A concrete recipe to extend this base to melody / bass / transcription |
 
-## Quick start
+## Using the code with your own checkpoint
 
 ```bash
-# 1. Get the BTC model architecture. Our checkpoint carries the fine-tuned weights;
-#    you only need BTC-ISMIR19's btc_model.py to instantiate the body. Run this from
-#    inside this folder so it lands at ./BTC-ISMIR19 (the scripts look there).
+# 1. Get the BTC model architecture. The scripts expect it at ./BTC-ISMIR19.
 git clone https://github.com/jayg996/BTC-ISMIR19
 
 # 2. Install deps
 pip install torch librosa mir_eval numpy pyyaml soundfile
 
-# 3. Run the model on audio. manifest = {"tracks":[{"id","title","audioUrl"}]}; audioUrl may be file://
-python hcqt_eval.py btc_hcqt_beatlesft.pt your_manifest.json out/
+# 3. Supply a checkpoint whose provenance and rights you have verified.
+#    manifest = {"tracks":[{"id","title","audioUrl"}]}; audioUrl may be file://
+python hcqt_eval.py /path/to/your_checkpoint.pt your_manifest.json out/
 
 # 4. Score against a reference. refs = {id: [[start, end, "C:maj"], ...]}
 python bench_score.py --ref refs.json "ours=out/results-btc.json"
@@ -65,11 +85,12 @@ CIs. Full tables, methodology, and the lessons: [BENCHMARK.md](BENCHMARK.md).
 - Benchmarks — GuitarSet (NYU MARL, CC-BY-4.0); Schubert Winterreise (Zenodo 5139893, CC-BY-3.0).
 
 ## License
-Code and the released `btc_hcqt_beatlesft.pt` checkpoint are published under the [MIT license](LICENSE). MIT permits use, modification, redistribution, and commercial use of these files when the required copyright and license notice is retained. The upstream [BTC implementation](https://github.com/jayg996/BTC-ISMIR19) is also MIT-licensed.
-
-**Training-data boundary:** This checkpoint starts from BTC and was fine-tuned on Beatles recordings. The upstream BTC authors describe training on Isophonics, Robbie Williams, and UsPop2002 audio obtained from music services; they do not distribute those recordings because of copyright. This repository distributes code and model weights, **not the training recordings**, and does not represent the underlying music as cleared for your use.
-
-The MIT grant for this code and checkpoint is **not** a license to copy, redistribute, or otherwise use the training recordings or any audio you submit. Use audio you have the right to analyze, and check the terms of any third-party libraries or datasets you use. If your project requires a model trained only on fully licensed or cleared recordings, **do not treat this checkpoint as satisfying that requirement** without your own rights review. Chord predictions are estimates, not copyright or sample-clearance decisions.
+The source code and documentation in the current repository are offered under the
+[MIT license](LICENSE). The previously published research checkpoint is not included in
+the current files; see the availability and provenance notice above. Neither the code
+license nor access to any checkpoint grants rights to training recordings or to audio
+submitted for analysis. Chord predictions are estimates, not copyright or sample-clearance
+decisions.
 
 ## From
 Built by [Selekt](https://selektaudio.com) — cleared-sample tools for producers and composers.
